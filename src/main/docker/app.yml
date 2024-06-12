@@ -6,12 +6,14 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://hs-postgresql/hsds
       - SPRING_DATASOURCE_USERNAME=hs
       - SPRING_DATASOURCE_PASSWORD=hs
+      - HARBOUR_CLOUD_COMPUTING_URL=http://cloudcomputing:8080/v1/wallet/transaction
     ports:
       - 9000:9000
     networks:
-      - hs
+      - hs-network
     depends_on:
       - hs-postgresql
+      - cloudcomputing
 
   hs-postgresql:
     image: 'postgres:16'
@@ -23,17 +25,17 @@ services:
       - POSTGRES_USER=hs
       - POSTGRES_PASSWORD=hs
     networks:
-      - hs
+      - hs-network
 
   cloudcomputing:
     image: 'igorsakhankov/harbour-cloudcomputing'
     ports:
       - '8181:8080'
     networks:
-      - hs
+      - hs-network
 
 networks:
-  hs:
+  hs-network:
     driver: bridge
 
 volumes:
