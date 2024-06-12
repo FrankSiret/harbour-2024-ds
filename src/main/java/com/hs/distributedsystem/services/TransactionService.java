@@ -3,17 +3,14 @@ package com.hs.distributedsystem.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.hs.distributedsystem.controllers.exception.CustomException;
 import com.hs.distributedsystem.controllers.vm.GenericResponseVM;
-import com.hs.distributedsystem.controllers.vm.TransactionResponseVM;
 import com.hs.distributedsystem.domain.Transaction;
 import com.hs.distributedsystem.domain.TransactionResponse;
 import com.hs.distributedsystem.repository.TransactionRepository;
@@ -79,7 +76,7 @@ public class TransactionService {
         if(response == null) {
             throw new Exception("Response null");
         }
-        if(response.getError() == null) {
+        if(response.getError() != null) {
             throw new CustomException(response.getError(), HttpStatus.BAD_REQUEST);
         }
         if(response.getData() == null) {
