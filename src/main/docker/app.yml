@@ -1,0 +1,41 @@
+services:
+
+  hs-ds:
+    image: hs-ds
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://hs-postgresql/hsds
+      - SPRING_DATASOURCE_USERNAME=hs
+      - SPRING_DATASOURCE_PASSWORD=hs
+    ports:
+      - 9000:9000
+    networks:
+      - hs
+    depends_on:
+      - hs-postgresql
+
+  hs-postgresql:
+    image: 'postgres:16'
+    ports:
+      - 54320:5432
+    volumes:
+      - ~/volumes/hs/postgresql/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hs
+      - POSTGRES_PASSWORD=hs
+    networks:
+      - hs
+
+  cloudcomputing:
+    image: 'igorsakhankov/harbour-cloudcomputing'
+    ports:
+      - '8181:8080'
+    networks:
+      - hs
+
+networks:
+  hs:
+    driver: bridge
+
+volumes:
+  hs-postgresql: 
+    driver: local
