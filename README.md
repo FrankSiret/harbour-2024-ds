@@ -4,7 +4,7 @@ Harbour Space Lab
 
 ## Deploy
 
-First build a docker image of your app by running
+First build a docker image of the app by running
 
 ```
 .\mvnw verify jib:dockerBuild
