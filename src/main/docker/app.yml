@@ -21,6 +21,7 @@ services:
       - 54320:5432
     volumes:
       - ~/volumes/hs/postgresql/:/var/lib/postgresql/data/
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     environment:
       - POSTGRES_USER=hs
       - POSTGRES_PASSWORD=hs
