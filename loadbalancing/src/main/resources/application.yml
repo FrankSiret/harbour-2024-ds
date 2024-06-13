@@ -1,4 +1,7 @@
 logging:
+  level:
+    root: DEBUG
+
   file:
     name: dsapp-lb.log
 
