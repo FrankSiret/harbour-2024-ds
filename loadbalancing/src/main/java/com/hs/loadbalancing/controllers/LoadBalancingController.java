@@ -57,7 +57,8 @@ public class LoadBalancingController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(serviceUrl));
-        return new ResponseEntity<>(result, headers, HttpStatus.FOUND);
+
+        return ResponseEntity.ok().headers(headers).body(result);
     }
 
     @GetMapping("/routes")
