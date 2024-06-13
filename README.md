@@ -4,10 +4,12 @@ Harbour Space Lab
 
 ## Deploy
 
-First build a docker image of the app by running
+First build a docker image of the distributed-system and load-balancing app by running
 
 ```
-.\mvnw verify jib:dockerBuild
+mvn verify jib:dockerBuild -f .\distributedsystem\pom.xml
+
+mvn verify jib:dockerBuild -f .\loadbalancing\pom.xml
 ```
 
 Then run:
