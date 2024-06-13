@@ -417,3 +417,23 @@
 2024-06-13T20:17:02.786+02:00  INFO 2456 --- [distributedsystem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2024-06-13T20:17:02.793+02:00  INFO 2456 --- [distributedsystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2024-06-13T20:17:02.807+02:00  INFO 2456 --- [distributedsystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-06-13T21:13:48.667+02:00  INFO 16068 --- [distributedsystem] [main] c.h.d.DistributedsystemApplicationTests  : Starting DistributedsystemApplicationTests using Java 17.0.11 with PID 16068 (started by Frank in C:\Users\Siret\frank\projects\hs\distributedsystem\distributedsystem)
+2024-06-13T21:13:48.672+02:00  INFO 16068 --- [distributedsystem] [main] c.h.d.DistributedsystemApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2024-06-13T21:13:50.179+02:00  INFO 16068 --- [distributedsystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-06-13T21:13:50.288+02:00  INFO 16068 --- [distributedsystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 94 ms. Found 2 JPA repository interfaces.
+2024-06-13T21:13:51.428+02:00  INFO 16068 --- [distributedsystem] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-06-13T21:13:51.556+02:00  INFO 16068 --- [distributedsystem] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-06-13T21:13:51.635+02:00  INFO 16068 --- [distributedsystem] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-06-13T21:13:52.232+02:00  INFO 16068 --- [distributedsystem] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-06-13T21:13:52.279+02:00  INFO 16068 --- [distributedsystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-06-13T21:13:52.656+02:00  INFO 16068 --- [distributedsystem] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6a543e09
+2024-06-13T21:13:52.672+02:00  INFO 16068 --- [distributedsystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-06-13T21:13:52.719+02:00  WARN 16068 --- [distributedsystem] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-06-13T21:13:54.022+02:00  INFO 16068 --- [distributedsystem] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-06-13T21:13:54.117+02:00  INFO 16068 --- [distributedsystem] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-06-13T21:13:55.768+02:00  WARN 16068 --- [distributedsystem] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-06-13T21:13:58.138+02:00  INFO 16068 --- [distributedsystem] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2024-06-13T21:13:58.390+02:00  INFO 16068 --- [distributedsystem] [main] c.h.d.DistributedsystemApplicationTests  : Started DistributedsystemApplicationTests in 10.158 seconds (process running for 11.683)
+2024-06-13T21:13:59.321+02:00  INFO 16068 --- [distributedsystem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-06-13T21:13:59.321+02:00  INFO 16068 --- [distributedsystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-06-13T21:13:59.336+02:00  INFO 16068 --- [distributedsystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
