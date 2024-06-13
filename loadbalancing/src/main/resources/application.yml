@@ -9,6 +9,9 @@ spring:
 server:
   port: 9060
 
+springdoc:
+  api-docs:
+    path: /api-docs
 
 application:
   services:
