@@ -32,4 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 
-dsapp.log*
+dsapp-lb.log*
