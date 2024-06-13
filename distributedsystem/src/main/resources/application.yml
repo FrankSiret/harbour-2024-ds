@@ -1,3 +1,10 @@
+logging:
+  level:
+    root: DEBUG
+
+  file:
+    name: dsapp-ds.log
+
 server:
   port: 9000
 
@@ -20,10 +27,6 @@ spring:
     pathmatch:
       matching-strategy: ant-path-matcher
 
-logging:
-  file:
-    name: dsapp-ds.log
-
 harbour-cloud-computing:
   url: http://localhost:8181/v1/wallet/transaction
 
@@ -35,32 +38,27 @@ springdoc:
   api-docs:
     path: /api-docs
 
-# resilience4j:
-#   circuitbreaker:
-#     instances:
-#       my-circuit-breaker:
-#         registerHealthIndicator: true
-#         slidingWindowSize: 10
-#         failureRateThreshold: 50
-#         waitDurationInOpenState: 10000
-#         permittedNumberOfCallsInHalfOpenState: 3
-#         slidingWindowType: COUNT_BASED
-#         minimumNumberOfCalls: 5
-#         automaticTransitionFromOpenToHalfOpenEnabled: true
+resilience4j:
+  circuitbreaker:
+    instances:
+      my-circuit-breaker:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 40s
+        permitted-number-of-calls-in-half-open-state: 5
 
-#   retry:
-#     instances:
-#       my-circuit-breaker:
-#         maxRetryAttempts: 3
-#         waitDuration: 5000
-#         exponentialBackoff:
-#           enabled: true
-#           multiplier: 2.0
-#           maxWaitDuration: 60000
-#         random:
-#           enabled: true
+  retry:
+    instances:
+      my-circuit-breaker:
+        max-attempts: 3
+        wait-duration: 5s
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2.0
+        exponential-max-wait-duration: 60s
+        enable-randomized-wait: true
 
-#   timelimiter:
-#     instances:
-#       my-circuit-breaker:
-#         timeoutDuration: 3000
+  timelimiter:
+    instances:
+      my-circuit-breaker:
+        timeout-duration: 60s
