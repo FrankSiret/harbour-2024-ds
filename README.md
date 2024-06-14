@@ -29,6 +29,40 @@ The Load Balancing Service is located at ./loadbalancing. Is designed to distrib
 - **Load Balancing Algorithm**: Decide which instance should handle the next request.
 - **Redirection Logic**: Redirect incoming requests to one of the available instances.
 
+### How to use
+
+Request to `POST http://localhost:9060/client/transaction` or `POST http://localhost:9060/client/transaction/cb`, will redirect to a healthy instances, the second one use the circuit breaker service implemented.
+
+BODY:
+
+```json
+{
+    "amount": 100.0,
+    "currency": "USD",
+    "description": "Hello, World",
+    "userId": "user-1"
+}
+```
+
+---
+
+Request to `GET http://localhost:9060/routes` to get the list of available distributedsystem-core instances.
+
+---
+
+Additionally you can request to `POST http://localhost:9060/register` to register new instance manually
+
+BODY:
+
+```json
+{
+    "host": "hs-distributedsystem-app1",
+    "port": "9000"
+}
+```
+
+TODO: automatically register new instance to the loadbalancing
+
 ## Circuit Breaker
 
 The Circuit Breaker Service is located inside of ./distributedsystem service. Is designed to enhance the resilience and reliability of a microservices-based system by preventing repeated failures from overwhelming the system. It monitors service calls and opens a circuit when a failure threshold is reached, temporarily halting further calls to allow the service to recover.
@@ -44,7 +78,7 @@ The Circuit Breaker Service is located inside of ./distributedsystem service. Is
 ```yml
 resilience4j:
   # this configure circuit breaker
-  circuitbreaker: 
+  circuitbreaker:
     instances:
       my-circuit-breaker:
         sliding-window-type: COUNT_BASED # switches from CLOSED to OPEN if the last N calls failed or were slow
@@ -54,7 +88,7 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 5 # configures the number of calls that will be allowed in the half-open state
 
   # this configure circuit breaker retry
-  retry: 
+  retry:
     instances:
       my-circuit-breaker:
         max-attempts: 3 # maximum number of retry attempts that should be made for a failed operation 
