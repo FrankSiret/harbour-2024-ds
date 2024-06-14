@@ -1,0 +1,11 @@
+[Unit]
+Description=Harbour Distributed System Lab
+
+[Service]
+ExecStart=/usr/bin/java -jar /home/ubuntu/app.jar
+Type=simple
+Environment=PATH=/usr/bin:/usr/local/bin
+WorkingDirectory=/home/ubuntu
+
+[Install]
+WantedBy=multi-user.target
