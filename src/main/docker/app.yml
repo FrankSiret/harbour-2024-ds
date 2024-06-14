@@ -1,7 +1,7 @@
 services:
 
-  hs-ds:
-    image: hs-ds
+  hs-distributedsystem-app1:
+    image: hs-distributedsystem
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://hs-postgresql/hsds
       - SPRING_DATASOURCE_USERNAME=hs
@@ -14,6 +14,50 @@ services:
     depends_on:
       - hs-postgresql
       - cloudcomputing
+
+  hs-distributedsystem-app2:
+    image: hs-distributedsystem
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://hs-postgresql/hsds
+      - SPRING_DATASOURCE_USERNAME=hs
+      - SPRING_DATASOURCE_PASSWORD=hs
+      - HARBOUR_CLOUD_COMPUTING_URL=http://cloudcomputing:8080/v1/wallet/transaction
+    ports:
+      - 9001:9000
+    networks:
+      - hs-network
+    depends_on:
+      - hs-postgresql
+      - cloudcomputing
+
+  hs-distributedsystem-app3:
+    image: hs-distributedsystem
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://hs-postgresql/hsds
+      - SPRING_DATASOURCE_USERNAME=hs
+      - SPRING_DATASOURCE_PASSWORD=hs
+      - HARBOUR_CLOUD_COMPUTING_URL=http://cloudcomputing:8080/v1/wallet/transaction
+    ports:
+      - 9002:9000
+    networks:
+      - hs-network
+    depends_on:
+      - hs-postgresql
+      - cloudcomputing
+
+  hs-loadbalancing:
+    image: hs-loadbalancing
+    environment:
+      - APPLICATION_SERVICES_INSTANCES=http://hs-distributedsystem-app1:9000,http://hs-distributedsystem-app2:9000,http://hs-distributedsystem-app3:9000
+      - LOGGING_LEVEL_ROOT=DEBUG
+    ports:
+      - 9060:9060
+    networks:
+      - hs-network
+    depends_on:
+      - hs-distributedsystem-app1
+      - hs-distributedsystem-app2
+      - hs-distributedsystem-app3
 
   hs-postgresql:
     image: 'postgres:16'

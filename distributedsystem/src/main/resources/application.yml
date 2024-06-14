@@ -1,0 +1,64 @@
+logging:
+  level:
+    root: DEBUG
+
+  file:
+    name: dsapp-ds.log
+
+server:
+  port: 9000
+
+spring:
+  application:
+    name: distributedsystem
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hsds
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect 
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+
+harbour-cloud-computing:
+  url: http://localhost:8181/v1/wallet/transaction
+
+discover:
+  loadbalancer:
+    url: http://localhost:9060/register
+
+springdoc:
+  api-docs:
+    path: /api-docs
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      my-circuit-breaker:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 40s
+        permitted-number-of-calls-in-half-open-state: 5
+
+  retry:
+    instances:
+      my-circuit-breaker:
+        max-attempts: 3
+        wait-duration: 5s
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2.0
+        exponential-max-wait-duration: 60s
+        enable-randomized-wait: true
+
+  timelimiter:
+    instances:
+      my-circuit-breaker:
+        timeout-duration: 60s

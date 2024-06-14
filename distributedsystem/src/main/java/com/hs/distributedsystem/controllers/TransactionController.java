@@ -2,6 +2,7 @@ package com.hs.distributedsystem.controllers;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,10 +31,17 @@ public class TransactionController {
     }
 
     @PostMapping("/transactions")
-    public ResponseEntity<TransactionResponseDTO> createTransaction(@RequestBody TransactionDTO transactionDTO) throws Exception {
-        log.info("REST request to create transaction : {}", transactionDTO);
+    public ResponseEntity<TransactionResponseDTO> createTransaction(
+        @RequestHeader(value = "X-requested-latency", required = false) Long latency,
+        @RequestBody TransactionDTO transactionDTO
+    ) throws Exception {
+        log.info("REST request to create transaction : {}, latency : {}", transactionDTO, latency);
 
-        TransactionResponseDTO result = transactionService.createTransaction(transactionDTO);
+        if(latency != null) {
+            Thread.sleep(latency);
+        }
+
+        TransactionResponseDTO result = transactionService.createTransaction(transactionDTO, latency);
 
         return ResponseEntity.ok().body(result);
     }

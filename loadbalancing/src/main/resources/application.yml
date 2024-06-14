@@ -1,0 +1,27 @@
+logging:
+  level:
+    root: DEBUG
+
+  file:
+    name: dsapp-lb.log
+
+spring:
+  application:
+    name: loadbalancing
+
+server:
+  port: 9060
+
+springdoc:
+  api-docs:
+    path: /api-docs
+
+application:
+  services:
+    instances:
+      - http://localhost:9000
+      - http://localhost:9001
+      - http://localhost:9002
+
+  health:
+    check-interval: 30000 # 30 seconds

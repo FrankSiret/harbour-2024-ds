@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,19 +69,25 @@ public class TransactionService {
         return transactionResponseMapper.toDto(transactionResponse);
     }
 
-    public TransactionResponseDTO createTransaction(TransactionDTO transactionDTO) throws Exception {
+    public TransactionResponseDTO createTransaction(TransactionDTO transactionDTO, Long latency) throws Exception {
         log.info("Request to create transaction : {}", transactionDTO);
 
-        GenericResponseVM response = restTemplate.postForObject(harbourCloudComputingUrl, transactionDTO,
+        HttpHeaders headers = new HttpHeaders();
+        if (latency != null) {
+            headers.add("X-requested-latency", latency.toString());
+        }
+        HttpEntity<TransactionDTO> request = new HttpEntity<>(transactionDTO, headers);
+
+        GenericResponseVM response = restTemplate.postForObject(harbourCloudComputingUrl, request,
                 GenericResponseVM.class);
 
-        if(response == null) {
+        if (response == null) {
             throw new Exception("Response null");
         }
-        if(response.getError() != null) {
+        if (response.getError() != null) {
             throw new CustomException(response.getError(), HttpStatus.BAD_REQUEST);
         }
-        if(response.getData() == null) {
+        if (response.getData() == null) {
             throw new CustomException("Data is null", HttpStatus.BAD_REQUEST);
         }
 

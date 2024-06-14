@@ -33,4 +33,3 @@ build/
 .vscode/
 
 dsapp-ds.log*
-dsapp-lb.log*
