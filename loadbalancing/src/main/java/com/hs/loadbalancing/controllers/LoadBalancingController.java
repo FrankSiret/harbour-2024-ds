@@ -67,6 +67,29 @@ public class LoadBalancingController {
         return ResponseEntity.ok().headers(headersResponse).body(result);
     }
 
+    @PostMapping("/client/transaction/cb")
+    public ResponseEntity<TransactionResponseDTO> redirectWithCB(
+            @RequestHeader(value = "X-requested-latency", required = false) Long latency,
+            @RequestBody TransactionDTO transactionDTO) throws Exception {
+        log.info("REST request to create transaction using load balancing : {}, latency : {}", transactionDTO, latency);
+
+        String serviceUrl = loadBalancingService.getNextServiceUrl() + "/api/transactions/cb";
+        log.debug("Redirect to : {}", serviceUrl);
+
+        HttpHeaders headers = new HttpHeaders();
+        if (latency != null) {
+            headers.add("X-requested-latency", latency.toString());
+        }
+        HttpEntity<TransactionDTO> request = new HttpEntity<>(transactionDTO, headers);
+
+        TransactionResponseDTO result = restTemplate.postForObject(serviceUrl, request, TransactionResponseDTO.class);
+
+        HttpHeaders headersResponse = new HttpHeaders();
+        headersResponse.setLocation(URI.create(serviceUrl));
+
+        return ResponseEntity.ok().headers(headersResponse).body(result);
+    }
+
     @GetMapping("/routes")
     public ResponseEntity<List<String>> getValidRoutes() {
         log.info("REST request to get valid route");
