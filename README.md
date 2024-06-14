@@ -20,7 +20,7 @@ docker compose -f ./src/main/docker/app.yml up -d
 
 ## Deploy in EC2
 
-First of all, you need an instance of EC2 running, connect to it using ssh in your favorite command prompt by running:
+First of all, we need a running instance of EC2, connect to it using ssh in your favorite command prompt by running:
 
 ```sh
 ssh -i your_private_key ubuntu@your_instance_ip
@@ -54,35 +54,139 @@ OpenJDK Runtime Environment (build 17.0.11+9-Ubuntu-1)
 OpenJDK 64-Bit Server VM (build 17.0.11+9-Ubuntu-1, mixed mode, sharing)
 ```
 
+### Install Maven
+
+```sh
+sudo apt install maven
+```
+
 ### Install PostgreSQL
 
 To install PostgreSQL, run the following command in the command prompt:
 
 ```sh
-sudo apt install postgresql
+sudo apt install postgresql postgresql-contrib
 ```
 
 #### Configure PostgreSQL
 
-Now that we can connect to our PostgreSQL server, the next step is to set a password for the `postgres` user. Run the following command at a terminal prompt to connect to the default PostgreSQL template database:
+Now that we can connect to our PostgreSQL server, the next step is to set a password for the `postgres` user:
 
 ```sh
-sudo -u postgres psql template1
+sudo -u postgres psql
 ```
 
-The above command connects to PostgreSQL database template1 as user `postgres`. Once you connect to the PostgreSQL server, you will be at an SQL prompt. You can run the following SQL command at the psql prompt to configure the password for the user postgres.
+Run the following SQL command at the psql prompt to configure the password for the user postgres.
 
-> Here we going to use the password `root` for testing propose.
+> Note: Here we going to use the password `root` for testing propose.
 
 ```sql
-ALTER USER postgres with encrypted password 'root';
+ALTER USER postgres PASSWORD 'root';
 ```
 
-Finally, you should restart the PostgreSQL service to initialize the new configuration. From a terminal prompt enter the following to restart PostgreSQL:
+> Note: You can use the password you want but need to set the environment variable `SPRING_DATASOURCE_PASSWORD=your_secure_password`
+
+> Note: Exit the psql prompt executing the `\q` command  
+
+Finally, we should restart the PostgreSQL service to initialize the new configuration. From a terminal prompt enter the following to restart PostgreSQL:
 
 ```sh
 sudo systemctl restart postgresql.service
 ```
+
+#### Creating a New Database
+
+```sh
+sudo -u postgres createdb hsds
+```
+
+> Note: We are using the name `hsds` for the default database name of our application, you can use another name you want but need to set the environment variable `SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/your_db_name`
+
+### Building the Application
+
+Clone repository from github
+
+```sh
+git clone https://github.com/FrankSiret/harbour-2024-ds.git
+```
+
+Move to the project
+
+```sh
+cd harbour-2024-ds
+```
+
+Install dependencies
+
+```sh
+mvn clean install -f ./distributedsystem/pom.xml
+```
+
+Build the artifact
+
+```sh
+mvn package -f ./distributedsystem/pom.xml
+```
+
+> Note: The above command create the artifact `distributedsystem-0.0.1-SNAPSHOT.jar` located at `./distributedsystem/target/distributedsystem-0.0.1-SNAPSHOT.jar`. We are going to copy to `/home/ubuntu` folder to run it from there.
+
+```sh
+cp ./distributedsystem/target/distributedsystem-0.0.1-SNAPSHOT.jar /home/ubuntu/app.jar
+```
+
+### Running the Application as a Service
+
+To run the `app.jar` Java application as a service, we need to create a systemd service file. Fortunately we have created the file service `./app.service`, just copy it to `/etc/systemd/system/app.service`
+
+```sh
+sudo cp ./app.service /etc/systemd/system/app.service
+```
+
+#### Reload Systemd
+
+Reload systemd to recognize the new service:
+
+```sh
+sudo systemctl daemon-reload
+```
+
+#### Start and Enable the Service
+
+Start the service:
+
+```sh
+sudo systemctl start app.service
+```
+
+Enable the service to start on boot:
+
+```sh
+sudo systemctl enable app.service
+```
+
+#### Check the Service Status
+
+Check the status of the service to ensure it is running:
+
+```sh
+sudo systemctl status app.service
+```
+
+### Enjoy :P
+
+At this point the application is up and running and we can make api request to its health endpoint 
+
+```sh
+curl http://localhost:9000/actuator/health
+```
+
+> Note: It will response `{"status":"UP"}`
+
+### Last step
+
+To finish we expose the port `9000` of the EC2 instance to be accessible from outside.
+
+
 
 ## Load Balancing
 
