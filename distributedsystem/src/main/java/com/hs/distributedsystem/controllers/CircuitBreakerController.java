@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.hs.distributedsystem.services.CircuitBreakerService;
 import com.hs.distributedsystem.services.dto.TransactionDTO;
@@ -40,6 +41,13 @@ public class CircuitBreakerController {
         }
         HttpEntity<TransactionDTO> request = new HttpEntity<>(transactionDTO, headers);
 
-        return circuitBreakerService.callService("http://localhost:9000/api/transactions", request);
+        String redirect = ServletUriComponentsBuilder.fromCurrentContextPath()
+                                                     .path("/api/transactions")
+                                                     .toUriString();
+
+        log.debug("Redirect cb : {}", redirect);
+
+        return circuitBreakerService.callService(redirect, request);
     }
+
 }
