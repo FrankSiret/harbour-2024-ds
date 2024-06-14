@@ -18,6 +18,72 @@ Then run:
 docker compose -f ./src/main/docker/app.yml up -d
 ```
 
+## Deploy in EC2
+
+First of all, you need an instance of EC2 running, connect to it using ssh in your favorite command prompt by running:
+
+```sh
+ssh -i your_private_key ubuntu@your_instance_ip
+```
+
+### Update and upgrade apt dependencies:
+
+```sh
+sudo apt-get update && sudo apt-get upgrade
+```
+
+### Install JDK 17 
+
+The easiest way to install the JDK is using the `apt` package manager:
+
+```sh
+apt install openjdk-17-jdk openjdk-17-jre
+```
+
+Once installed, verify the Java version using the following command:
+
+```sh
+java -version
+```
+
+You should get the following output:
+
+```
+openjdk version "17.0.11" 2024-04-16
+OpenJDK Runtime Environment (build 17.0.11+9-Ubuntu-1)
+OpenJDK 64-Bit Server VM (build 17.0.11+9-Ubuntu-1, mixed mode, sharing)
+```
+
+### Install PostgreSQL
+
+To install PostgreSQL, run the following command in the command prompt:
+
+```sh
+sudo apt install postgresql
+```
+
+#### Configure PostgreSQL
+
+Now that we can connect to our PostgreSQL server, the next step is to set a password for the `postgres` user. Run the following command at a terminal prompt to connect to the default PostgreSQL template database:
+
+```sh
+sudo -u postgres psql template1
+```
+
+The above command connects to PostgreSQL database template1 as user `postgres`. Once you connect to the PostgreSQL server, you will be at an SQL prompt. You can run the following SQL command at the psql prompt to configure the password for the user postgres.
+
+> Here we going to use the password `root` for testing propose.
+
+```sql
+ALTER USER postgres with encrypted password 'root';
+```
+
+Finally, you should restart the PostgreSQL service to initialize the new configuration. From a terminal prompt enter the following to restart PostgreSQL:
+
+```sh
+sudo systemctl restart postgresql.service
+```
+
 ## Load Balancing
 
 The Load Balancing Service is located at ./loadbalancing. Is designed to distribute incoming requests across multiple instances of a service to ensure high availability and reliability. This service monitors the health of each instance and dynamically adjusts the load distribution based on the availability of instances.
