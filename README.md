@@ -172,6 +172,8 @@ Check the status of the service to ensure it is running:
 sudo systemctl status app.service
 ```
 
+![image](https://github.com/FrankSiret/harbour-2024-ds/assets/53590759/a02d1132-33d9-4924-ab86-cf81c6ad67d7)
+
 ### Enjoy :P
 
 At this point the application is up and running and we can make api request to its health endpoint 
@@ -182,11 +184,13 @@ curl http://localhost:9000/actuator/health
 
 > Note: It will response `{"status":"UP"}`
 
+![image](https://github.com/FrankSiret/harbour-2024-ds/assets/53590759/00699b1c-87bd-4e0c-a868-8586b245e547)
+
 ### Last step
 
 To finish we expose the port `9000` of the EC2 instance to be accessible from outside.
 
-
+![image](https://github.com/FrankSiret/harbour-2024-ds/assets/53590759/77c3a946-76ef-4bd4-b9fb-f49cdca086aa)
 
 ## Load Balancing
 
