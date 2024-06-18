@@ -13,15 +13,29 @@ spring:
     name: distributedsystem
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/hsds
-    username: postgres
-    password: root
-    driver-class-name: org.postgresql.Driver
-
+    ds1:
+      url: jdbc:postgresql://localhost:5432/hsds-1
+      username: postgres
+      password: root
+      driver-class-name: org.postgresql.Driver
+    ds2:
+      url: jdbc:postgresql://localhost:5432/hsds-2
+      username: postgres
+      password: root
+      driver-class-name: org.postgresql.Driver
+    ds3:
+      url: jdbc:postgresql://localhost:5432/hsds-3
+      username: postgres
+      password: root
+      driver-class-name: org.postgresql.Driver
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect 
+    # database-platform: org.hibernate.dialect.PostgreSQLDialect 
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   mvc:
     pathmatch:

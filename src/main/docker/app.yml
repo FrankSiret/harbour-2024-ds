@@ -59,12 +59,36 @@ services:
       - hs-distributedsystem-app2
       - hs-distributedsystem-app3
 
-  hs-postgresql:
+  hs-postgresql-0:
     image: 'postgres:16'
     ports:
       - 54320:5432
     volumes:
-      - ~/volumes/hs/postgresql/:/var/lib/postgresql/data/
+      - ~/volumes/hs/postgresql-0/:/var/lib/postgresql/data/
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    environment:
+      - POSTGRES_USER=hs
+      - POSTGRES_PASSWORD=hs
+    networks:
+      - hs-network
+  hs-postgresql-1:
+    image: 'postgres:16'
+    ports:
+      - 54321:5432
+    volumes:
+      - ~/volumes/hs/postgresql-1/:/var/lib/postgresql/data/
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    environment:
+      - POSTGRES_USER=hs
+      - POSTGRES_PASSWORD=hs
+    networks:
+      - hs-network
+  hs-postgresql-2:
+    image: 'postgres:16'
+    ports:
+      - 54322:5432
+    volumes:
+      - ~/volumes/hs/postgresql-2/:/var/lib/postgresql/data/
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     environment:
       - POSTGRES_USER=hs

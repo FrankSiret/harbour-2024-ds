@@ -104,6 +104,11 @@ public class TransactionService {
         return transactionResponseMapper.toDto(transactionResponseRepository.findAll());
     }
 
+    public Optional<TransactionDTO> findById(Long id) {
+        log.info("Request to get transaction by id : {}", id);
+        return transactionRepository.findById(id).map(transactionMapper::toDto);
+    }
+
     public Optional<TransactionResponseDTO> findByTransactionId(String transactionId) {
         log.info("Request to get transactionResponse by transactionId : {}", transactionId);
         return transactionResponseRepository.findByTransactionId(transactionId).map(transactionResponseMapper::toDto);
