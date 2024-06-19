@@ -9,8 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.hs.distributedsystem.services.dto.TransactionDTO;
-import com.hs.distributedsystem.services.dto.TransactionResponseDTO;
+import com.hs.distributedsystem.domain.Transaction;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -26,12 +25,12 @@ public class CircuitBreakerService {
     @CircuitBreaker(name = "my-circuit-breaker", fallbackMethod = "fallback")
     @Retry(name = "my-circuit-breaker")
     @TimeLimiter(name = "my-circuit-breaker")
-    public CompletableFuture<ResponseEntity<TransactionResponseDTO>> callService(String url, HttpEntity<TransactionDTO> request) {
+    public CompletableFuture<ResponseEntity<Void>> callService(String url, HttpEntity<Transaction> request) {
         return CompletableFuture.supplyAsync(
-                () -> restTemplate.postForEntity(url, request, TransactionResponseDTO.class));
+                () -> restTemplate.postForEntity(url, request, Void.class));
     }
 
-    public CompletableFuture<ResponseEntity<String>> fallback(String url, HttpEntity<TransactionDTO> request, Throwable throwable) {
+    public CompletableFuture<ResponseEntity<String>> fallback(String url, HttpEntity<Transaction> request, Throwable throwable) {
         return CompletableFuture
                 .completedFuture(ResponseEntity.status(503).body("Transaction service is taking too long to respond"));
     }

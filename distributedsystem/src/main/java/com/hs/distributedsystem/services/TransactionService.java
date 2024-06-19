@@ -1,6 +1,6 @@
 package com.hs.distributedsystem.services;
 
-import java.util.List;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -14,13 +14,6 @@ import org.springframework.web.client.RestTemplate;
 import com.hs.distributedsystem.controllers.exception.CustomException;
 import com.hs.distributedsystem.controllers.vm.GenericResponseVM;
 import com.hs.distributedsystem.domain.Transaction;
-import com.hs.distributedsystem.domain.TransactionResponse;
-import com.hs.distributedsystem.repository.TransactionRepository;
-import com.hs.distributedsystem.repository.TransactionResponseRepository;
-import com.hs.distributedsystem.services.dto.TransactionDTO;
-import com.hs.distributedsystem.services.dto.TransactionResponseDTO;
-import com.hs.distributedsystem.services.mapper.TransactionMapper;
-import com.hs.distributedsystem.services.mapper.TransactionResponseMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,49 +27,32 @@ public class TransactionService {
 
     private final RestTemplate restTemplate;
 
-    private final TransactionMapper transactionMapper;
-
     private final TransactionRepository transactionRepository;
 
-    private final TransactionResponseMapper transactionResponseMapper;
-
-    private final TransactionResponseRepository transactionResponseRepository;
-
-    TransactionService(
-            RestTemplate restTemplate,
-            TransactionMapper transactionMapper,
-            TransactionRepository transactionRepository,
-            TransactionResponseMapper transactionResponseMapper,
-            TransactionResponseRepository transactionResponseRepository) {
+    TransactionService(RestTemplate restTemplate, TransactionRepository transactionRepository) {
         this.restTemplate = restTemplate;
-        this.transactionMapper = transactionMapper;
-        this.transactionResponseMapper = transactionResponseMapper;
         this.transactionRepository = transactionRepository;
-        this.transactionResponseRepository = transactionResponseRepository;
     }
 
-    public TransactionDTO save(TransactionDTO transactionDTO) {
-        log.info("Request to save transaction : {}", transactionDTO);
-        Transaction transaction = transactionMapper.toEntity(transactionDTO);
-        transaction = transactionRepository.save(transaction);
-        return transactionMapper.toDto(transaction);
+    public void saveTransaction(Transaction transaction) throws SQLException {
+        log.info("Request to save transaction : {}", transaction);
+        transactionRepository.save(transaction);
     }
 
-    public TransactionResponseDTO save(TransactionResponseDTO transactionResponseDTO) {
-        log.info("Request to save transactionResponse : {}", transactionResponseDTO);
-        TransactionResponse transactionResponse = transactionResponseMapper.toEntity(transactionResponseDTO);
-        transactionResponse = transactionResponseRepository.save(transactionResponse);
-        return transactionResponseMapper.toDto(transactionResponse);
+    @Transactional(readOnly = true)
+    public Optional<Transaction> getTransactionById(String transactionId) throws SQLException {
+        log.info("Request to get transactionResponse by transactionId : {}", transactionId);
+        return transactionRepository.findById(transactionId);
     }
 
-    public TransactionResponseDTO createTransaction(TransactionDTO transactionDTO, Long latency) throws Exception {
+    public void createTransaction(Transaction transactionDTO, Long latency) throws Exception {
         log.info("Request to create transaction : {}", transactionDTO);
 
         HttpHeaders headers = new HttpHeaders();
         if (latency != null) {
             headers.add("X-requested-latency", latency.toString());
         }
-        HttpEntity<TransactionDTO> request = new HttpEntity<>(transactionDTO, headers);
+        HttpEntity<Transaction> request = new HttpEntity<>(transactionDTO, headers);
 
         GenericResponseVM response = restTemplate.postForObject(harbourCloudComputingUrl, request,
                 GenericResponseVM.class);
@@ -91,26 +67,15 @@ public class TransactionService {
             throw new CustomException("Data is null", HttpStatus.BAD_REQUEST);
         }
 
-        TransactionResponseDTO transactionResponseDTO = new TransactionResponseDTO();
-        transactionResponseDTO.setTransactionId(response.getData().getTransactionId());
-        transactionResponseDTO.setStatus(response.getData().getStatus());
-        transactionResponseDTO.setDetail(transactionDTO);
+        Transaction result = new Transaction();
+        result.setTransactionId(response.getData().getTransactionId());
+        result.setStatus(response.getData().getStatus());
+        result.setAmount(transactionDTO.getAmount());
+        result.setCurrency(transactionDTO.getCurrency());
+        result.setDescription(transactionDTO.getDescription());
+        result.setUserId(transactionDTO.getUserId());
 
-        return save(transactionResponseDTO);
+        saveTransaction(result);
     }
 
-    public List<TransactionResponseDTO> findAll() {
-        log.info("Request to get all transactionResponse");
-        return transactionResponseMapper.toDto(transactionResponseRepository.findAll());
-    }
-
-    public Optional<TransactionDTO> findById(Long id) {
-        log.info("Request to get transaction by id : {}", id);
-        return transactionRepository.findById(id).map(transactionMapper::toDto);
-    }
-
-    public Optional<TransactionResponseDTO> findByTransactionId(String transactionId) {
-        log.info("Request to get transactionResponse by transactionId : {}", transactionId);
-        return transactionResponseRepository.findByTransactionId(transactionId).map(transactionResponseMapper::toDto);
-    }
 }

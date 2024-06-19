@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hs.distributedsystem.domain.Transaction;
 import com.hs.distributedsystem.services.TransactionService;
-import com.hs.distributedsystem.services.dto.TransactionDTO;
-import com.hs.distributedsystem.services.dto.TransactionResponseDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
+import java.net.URI;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
@@ -31,35 +31,26 @@ public class TransactionController {
     }
 
     @PostMapping("/transactions")
-    public ResponseEntity<TransactionResponseDTO> createTransaction(
+    public ResponseEntity<Void> createTransaction(
         @RequestHeader(value = "X-requested-latency", required = false) Long latency,
-        @RequestBody TransactionDTO transactionDTO
+        @RequestBody Transaction transaction
     ) throws Exception {
-        log.info("REST request to create transaction : {}, latency : {}", transactionDTO, latency);
+        log.info("REST request to create transaction : {}, latency : {}", transaction, latency);
 
         if(latency != null) {
             Thread.sleep(latency);
         }
 
-        TransactionResponseDTO result = transactionService.createTransaction(transactionDTO, latency);
+        transactionService.createTransaction(transaction, latency);
 
-        return ResponseEntity.ok().body(result);
-    }
-
-    @GetMapping("/transactions")
-    public ResponseEntity<List<TransactionResponseDTO>> getAllTransactions() {
-        log.info("REST request to get all transactions");
-
-        List<TransactionResponseDTO> result = transactionService.findAll();
-
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.created(URI.create("/api/transactions/" + transaction.getTransactionId())).build();
     }
 
     @GetMapping("/transactions/{transactionId}")
-    public ResponseEntity<TransactionResponseDTO> getByTransactionId(@PathVariable String transactionId) {
+    public ResponseEntity<Transaction> getByTransactionId(@PathVariable String transactionId) throws SQLException {
         log.info("REST request to get transactions by transactionId : {}", transactionId);
 
-        Optional<TransactionResponseDTO> result = transactionService.findByTransactionId(transactionId);
+        Optional<Transaction> result = transactionService.getTransactionById(transactionId);
 
         if(result.isPresent()) {
             return ResponseEntity.ok().body(result.get());

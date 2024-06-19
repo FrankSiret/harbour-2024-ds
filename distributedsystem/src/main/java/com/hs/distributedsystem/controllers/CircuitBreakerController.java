@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.hs.distributedsystem.domain.Transaction;
 import com.hs.distributedsystem.services.CircuitBreakerService;
-import com.hs.distributedsystem.services.dto.TransactionDTO;
-import com.hs.distributedsystem.services.dto.TransactionResponseDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,16 +29,16 @@ public class CircuitBreakerController {
     }
 
     @PostMapping("/transactions/cb")
-    public CompletableFuture<ResponseEntity<TransactionResponseDTO>> createTransactionWithCircuitBreaker(
+    public CompletableFuture<ResponseEntity<Void>> createTransactionWithCircuitBreaker(
             @RequestHeader(value = "X-requested-latency", required = false) Long latency,
-            @RequestBody TransactionDTO transactionDTO) {
+            @RequestBody Transaction transactionDTO) {
         log.info("REST request to create transaction with circuit breaker : {}, latency : {}", transactionDTO, latency);
 
         HttpHeaders headers = new HttpHeaders();
         if (latency != null) {
             headers.add("X-requested-latency", latency.toString());
         }
-        HttpEntity<TransactionDTO> request = new HttpEntity<>(transactionDTO, headers);
+        HttpEntity<Transaction> request = new HttpEntity<>(transactionDTO, headers);
 
         String redirect = ServletUriComponentsBuilder.fromCurrentContextPath()
                                                      .path("/api/transactions")
