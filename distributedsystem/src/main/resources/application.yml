@@ -12,25 +12,11 @@ spring:
   application:
     name: distributedsystem
 
-  # datasource:
-  #   shard1:
-  #     url: jdbc:postgresql://localhost:5432/hsds-1
-  #     username: postgres
-  #     password: root
-  #     driver-class-name: org.postgresql.Driver
-  #   shard2:
-  #     url: jdbc:postgresql://localhost:5432/hsds-2
-  #     username: postgres
-  #     password: root
-  #     driver-class-name: org.postgresql.Driver
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect 
-    # properties:
-    #   hibernate:
-    #     dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hsds
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
 
   mvc:
     pathmatch:
@@ -74,12 +60,12 @@ resilience4j:
 
 application:
   shards:
-    - url: jdbc:postgresql://localhost:5432/hsds-1
+    - url: jdbc:postgresql://localhost:5432/hsds_1
       username: postgres
       password: root
-    - url: jdbc:postgresql://localhost:5432/hsds-2
+    - url: jdbc:postgresql://localhost:5432/hsds_2
       username: postgres
       password: root
-    - url: jdbc:postgresql://localhost:5432/hsds-3
+    - url: jdbc:postgresql://localhost:5432/hsds_3
       username: postgres
       password: root

@@ -47,7 +47,9 @@ public class ShardsConnectionService {
   }
 
   private Integer getShardIndex(Object key) {
-    return key.hashCode() % shardsConfiguration.getShards().size();
+    int ix = key.hashCode() % shardsConfiguration.getShards().size();
+    if(ix < 0) ix += shardsConfiguration.getShards().size();
+    return ix;
   }
 
   public Connection getShardConnection(Object key) throws SQLException {

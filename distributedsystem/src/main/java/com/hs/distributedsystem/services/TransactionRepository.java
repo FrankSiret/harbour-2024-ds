@@ -21,7 +21,7 @@ public class TransactionRepository {
   }
 
   public void save(Transaction transaction) throws SQLException {
-    String insertSQL = "INSERT INTO transaction (transactionId, status, amount, currency, description, userId) VALUES (?, ?, ?, ?, ?, ?)";
+    String insertSQL = "INSERT INTO transaction (transaction_id, status, amount, currency, description, user_id) VALUES (?, ?, ?, ?, ?, ?)";
     try (Connection connection = shardsConnectionService.getShardConnection(transaction.getTransactionId());
         PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
       preparedStatement.setString(1, transaction.getTransactionId());
