@@ -3,47 +3,71 @@ services:
   hs-distributedsystem-app1:
     image: hs-distributedsystem
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://hs-postgresql/hsds
-      - SPRING_DATASOURCE_USERNAME=hs
-      - SPRING_DATASOURCE_PASSWORD=hs
       - HARBOUR_CLOUD_COMPUTING_URL=http://cloudcomputing:8080/v1/wallet/transaction
+      - APPLICATION_SHARDS_0_URL=jdbc:postgresql://hs-postgresql-0:5432/hsds
+      - APPLICATION_SHARDS_0_USERNAME=hs
+      - APPLICATION_SHARDS_0_PASSWORD=hs
+      - APPLICATION_SHARDS_1_URL=jdbc:postgresql://hs-postgresql-1:5432/hsds
+      - APPLICATION_SHARDS_1_USERNAME=hs
+      - APPLICATION_SHARDS_1_PASSWORD=hs
+      - APPLICATION_SHARDS_2_URL=jdbc:postgresql://hs-postgresql-2:5432/hsds
+      - APPLICATION_SHARDS_2_USERNAME=hs
+      - APPLICATION_SHARDS_2_PASSWORD=hs
     ports:
       - 9000:9000
     networks:
       - hs-network
     depends_on:
-      - hs-postgresql
+      - hs-postgresql-0
+      - hs-postgresql-1
+      - hs-postgresql-2
       - cloudcomputing
 
-  hs-distributedsystem-app2:
-    image: hs-distributedsystem
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://hs-postgresql/hsds
-      - SPRING_DATASOURCE_USERNAME=hs
-      - SPRING_DATASOURCE_PASSWORD=hs
-      - HARBOUR_CLOUD_COMPUTING_URL=http://cloudcomputing:8080/v1/wallet/transaction
-    ports:
-      - 9001:9000
-    networks:
-      - hs-network
-    depends_on:
-      - hs-postgresql
-      - cloudcomputing
+  # hs-distributedsystem-app2:
+  #   image: hs-distributedsystem
+  #   environment:
+  #     - HARBOUR_CLOUD_COMPUTING_URL=http://cloudcomputing:8080/v1/wallet/transaction
+  #     - APPLICATION_SHARDS_0_URL=jdbc:postgresql://hs-postgresql-0:5432/hsds
+  #     - APPLICATION_SHARDS_0_USERNAME=hs
+  #     - APPLICATION_SHARDS_0_PASSWORD=hs
+  #     - APPLICATION_SHARDS_1_URL=jdbc:postgresql://hs-postgresql-1:5432/hsds
+  #     - APPLICATION_SHARDS_1_USERNAME=hs
+  #     - APPLICATION_SHARDS_1_PASSWORD=hs
+  #     - APPLICATION_SHARDS_2_URL=jdbc:postgresql://hs-postgresql-2:5432/hsds
+  #     - APPLICATION_SHARDS_2_USERNAME=hs
+  #     - APPLICATION_SHARDS_2_PASSWORD=hs
+  #   ports:
+  #     - 9001:9000
+  #   networks:
+  #     - hs-network
+  #   depends_on:
+  #     - hs-postgresql-0
+  #     - hs-postgresql-1
+  #     - hs-postgresql-2
+  #     - cloudcomputing
 
-  hs-distributedsystem-app3:
-    image: hs-distributedsystem
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://hs-postgresql/hsds
-      - SPRING_DATASOURCE_USERNAME=hs
-      - SPRING_DATASOURCE_PASSWORD=hs
-      - HARBOUR_CLOUD_COMPUTING_URL=http://cloudcomputing:8080/v1/wallet/transaction
-    ports:
-      - 9002:9000
-    networks:
-      - hs-network
-    depends_on:
-      - hs-postgresql
-      - cloudcomputing
+  # hs-distributedsystem-app3:
+  #   image: hs-distributedsystem
+  #   environment:
+  #     - HARBOUR_CLOUD_COMPUTING_URL=http://cloudcomputing:8080/v1/wallet/transaction
+  #     - APPLICATION_SHARDS_0_URL=jdbc:postgresql://hs-postgresql-0:5432/hsds
+  #     - APPLICATION_SHARDS_0_USERNAME=hs
+  #     - APPLICATION_SHARDS_0_PASSWORD=hs
+  #     - APPLICATION_SHARDS_1_URL=jdbc:postgresql://hs-postgresql-1:5432/hsds
+  #     - APPLICATION_SHARDS_1_USERNAME=hs
+  #     - APPLICATION_SHARDS_1_PASSWORD=hs
+  #     - APPLICATION_SHARDS_2_URL=jdbc:postgresql://hs-postgresql-2:5432/hsds
+  #     - APPLICATION_SHARDS_2_USERNAME=hs
+  #     - APPLICATION_SHARDS_2_PASSWORD=hs
+  #   ports:
+  #     - 9002:9000
+  #   networks:
+  #     - hs-network
+  #   depends_on:
+  #     - hs-postgresql-0
+  #     - hs-postgresql-1
+  #     - hs-postgresql-2
+  #     - cloudcomputing
 
   hs-loadbalancing:
     image: hs-loadbalancing
@@ -56,8 +80,8 @@ services:
       - hs-network
     depends_on:
       - hs-distributedsystem-app1
-      - hs-distributedsystem-app2
-      - hs-distributedsystem-app3
+      # - hs-distributedsystem-app2
+      # - hs-distributedsystem-app3
 
   hs-postgresql-0:
     image: 'postgres:16'
@@ -65,10 +89,11 @@ services:
       - 54320:5432
     volumes:
       - ~/volumes/hs/postgresql-0/:/var/lib/postgresql/data/
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      # - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     environment:
       - POSTGRES_USER=hs
-      - POSTGRES_PASSWORD=hs
+      - POSTGRES_PASSWORD=hshs
     networks:
       - hs-network
   hs-postgresql-1:
@@ -77,10 +102,10 @@ services:
       - 54321:5432
     volumes:
       - ~/volumes/hs/postgresql-1/:/var/lib/postgresql/data/
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       - POSTGRES_USER=hs
-      - POSTGRES_PASSWORD=hs
+      - POSTGRES_PASSWORD=hshs
     networks:
       - hs-network
   hs-postgresql-2:
@@ -89,10 +114,10 @@ services:
       - 54322:5432
     volumes:
       - ~/volumes/hs/postgresql-2/:/var/lib/postgresql/data/
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       - POSTGRES_USER=hs
-      - POSTGRES_PASSWORD=hs
+      - POSTGRES_PASSWORD=hshs
     networks:
       - hs-network
 
