@@ -1,5 +1,7 @@
 package com.hs.distributedsystem.domain;
 
+import java.io.Serializable;
+
 import jakarta.persistence.*;
 
 import lombok.Data;
@@ -9,7 +11,9 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "transaction_response")
-public class TransactionResponse {
+public class TransactionResponse implements Serializable {
+
+	private static final long serialVersionUID = 9851792152L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)

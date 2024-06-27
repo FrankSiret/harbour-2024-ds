@@ -1,6 +1,7 @@
 logging:
   level:
-    root: DEBUG
+    ROOT: INFO
+    '[com.hs.distributedsystem]': DEBUG
 
   file:
     name: dsapp-ds.log
@@ -26,6 +27,20 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: hs
+    password: hs
+
+    listener: 
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 2s
+          max-attempts: 5
+          multiplier: 1.5
 
 harbour-cloud-computing:
   url: http://localhost:8181/v1/wallet/transaction
